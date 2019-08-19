@@ -6,7 +6,7 @@
 
 (declare print-basic-commands output execute)
 
-(defn interactive [lhs rhs]
+(defn run [lhs rhs]
   (app/interactive lhs rhs)
   (let [term-builder (doto (TerminalBuilder/builder) (.system true))
         term (.build term-builder)

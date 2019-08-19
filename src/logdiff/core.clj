@@ -2,7 +2,10 @@
   (:gen-class)
   (:require [logdiff.console :as console]))
 
-(defn -main [& args] (apply console/logdiff args))
+(defn -main [& args]
+  (if (= (first args) "-i")
+    (apply console/interactive (rest args))
+    (apply console/logdiff args)))
 
 
 (comment
