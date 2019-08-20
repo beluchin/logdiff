@@ -1,6 +1,6 @@
-(ns logdiff.console.interactive.domain-test
+(ns logdiff.interactive.domain-test
   (:require [clojure.test :as t]
-            [logdiff.console.interactive.domain :as sut]
+            [logdiff.interactive.domain :as sut]
             [logdiff.domain.num :as num]))
 
 (declare drop-last-arg)

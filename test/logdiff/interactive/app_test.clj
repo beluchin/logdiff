@@ -1,6 +1,6 @@
-(ns logdiff.console.interactive.app-test
+(ns logdiff.interactive.app-test
   (:require [clojure.test :as t]
-            [logdiff.console.interactive.app :as sut]
+            [logdiff.interactive.app :as sut]
             [tempfile.core :as f]))
 
 (declare interactive)

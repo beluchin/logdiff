@@ -1,6 +1,5 @@
-(ns logdiff.console.files
-  (:require [clojure.string :as str]
-            [logdiff.domain :as domain]))
+(ns logdiff.files
+  (:require [clojure.string :as str]))
 
 (declare slurp-log)
 

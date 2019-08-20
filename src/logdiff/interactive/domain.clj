@@ -1,4 +1,4 @@
-(ns logdiff.console.interactive.domain
+(ns logdiff.interactive.domain
   (:require [logdiff.domain.internal :as internal]))
 
 (defn logdiffline [lhs rhs rules]

@@ -1,6 +1,6 @@
-(ns logdiff.console.interactive
+(ns logdiff.interactive
   (:require [clojure.string :as str]
-            [logdiff.console.interactive.app :as app])
+            [logdiff.interactive.app :as app])
   (:import org.jline.reader.LineReaderBuilder
            org.jline.terminal.TerminalBuilder))
 

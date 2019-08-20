@@ -1,8 +1,8 @@
-(ns logdiff.console.interactive.app
+(ns logdiff.interactive.app
   (:refer-clojure :exclude [next])
-  (:require [logdiff.console.app :as app]
-            [logdiff.console.files :as files]
-            [logdiff.console.interactive.domain :as domain]))
+  (:require [logdiff.output :as output]
+            [logdiff.files :as files]
+            [logdiff.interactive.domain :as domain]))
 
 (declare session logdiffline)
 
@@ -24,4 +24,4 @@
 (def ^:private session (atom nil))
 
 (defn- logdiffline [lhs rhs]
-  (app/one-line-output (domain/logdiffline (.trim lhs) (.trim rhs) {})))
+  (output/one-line (domain/logdiffline (.trim lhs) (.trim rhs) {})))
