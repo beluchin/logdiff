@@ -1,7 +1,7 @@
 (ns logdiff.interactive.app-test
   (:require [clojure.test :as t]
             [logdiff.interactive.app :as sut]
-            [tempfile.core :as f]))
+            [logdiff.tempfile :as tempfile]))
 
 (declare interactive)
 
@@ -13,7 +13,6 @@
     (t/is (= :no-more-diffs (sut/next)))))
 
 (defn- interactive [lhstext rhstext]
-  ;; duplicated in core-test
-  (f/with-tempfile [l (f/tempfile lhstext)
-                    r (f/tempfile rhstext)]
-    (sut/interactive (.getAbsolutePath l) (.getAbsolutePath r))))
+  (tempfile/with-paths [l lhstext
+                        r rhstext]
+    (sut/interactive l r)))

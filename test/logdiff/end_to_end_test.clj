@@ -1,8 +1,8 @@
 (ns logdiff.end-to-end-test
   (:require [clojure.test :as t]
             [logdiff.core :as sut]
-            [tempfile.core :as f]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [logdiff.tempfile :as tempfile]))
 
 (declare main multiline)
 
@@ -39,16 +39,11 @@
   (clojure.string/join (System/lineSeparator) strings))
 
 (defn- main [lhstext rhstext & args]
-  ;; duplicated in interactive.app-test
-  (f/with-tempfile [l (f/tempfile lhstext)
-                    r (f/tempfile rhstext)]
+  (tempfile/with-paths [l lhstext
+                        r rhstext]
     (clojure.string/trim-newline
      (with-out-str
-       (apply (partial sut/-main
-                       (.getAbsolutePath l)
-                       (.getAbsolutePath r))
-              args)))))
-
+       (apply (partial sut/-main l r) args)))))
 
 (comment
   (clojure.string/join (System/lineSeparator) ["a" "b"])
