@@ -4,6 +4,10 @@
   (:import org.jline.reader.LineReaderBuilder
            org.jline.terminal.TerminalBuilder))
 
+;;;
+;;; this namespace contains the jline-related code exclusively
+;;;
+
 (declare print-basic-commands output execute)
 
 (defn run [lhs rhs]

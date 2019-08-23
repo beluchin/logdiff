@@ -4,6 +4,10 @@
             [logdiff.files :as files]
             [logdiff.interactive.domain :as domain]))
 
+;;;
+;;; sits between the jline-related code and the domain 
+;;;
+
 (declare session logdiffline)
 
 (defn interactive [lhs rhs]
