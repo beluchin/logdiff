@@ -13,6 +13,6 @@
     (t/is (= :no-more-diffs (sut/next)))))
 
 (defn- interactive [lhstext rhstext]
-  (tempfile/with-paths [l lhstext
-                        r rhstext]
+  (tempfile/with-filenames [l lhstext
+                            r rhstext]
     (sut/interactive l r)))

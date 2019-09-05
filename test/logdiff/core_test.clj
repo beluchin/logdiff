@@ -1,10 +1,19 @@
 (ns logdiff.core-test
-  (:require [logdiff.core :as sut]
-            [clojure.test :as t]
-            [logdiff.domain :as domain]))
+  (:require [clojure.test :as t]
+            [logdiff.core :as sut]
+            [logdiff.domain :as domain]
+            [logdiff.tempfile :as tempfile]
+            [tempfile.core :as core]))
 
-(t/deftest logdiff
-  (t/testing "plain output"
-    (t/is (= "[-hello-]{+goodbye+} world"
-             (with-redefs [domain/logdiff (constantly [[{:lhs "hello" :rhs "goodbye" :ignored false} " world"]])]
-               (sut/logdiff :whatever :whatever))))))
+(declare logdiff)
+
+(t/deftest plain-output
+  (t/is (= "[-hello-]{+goodbye+} world"
+           (with-redefs [domain/logdiff (constantly [[{:lhs "hello" :rhs "goodbye" :ignored false} " world"]])]
+             (logdiff "what" "ever")))))
+
+
+(defn- logdiff [lhstext rhstext]
+  (tempfile/with-filenames [lpath lhstext
+                            rpath rhstext]
+    (sut/logdiff lpath rpath)))

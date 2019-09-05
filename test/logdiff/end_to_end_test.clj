@@ -39,8 +39,8 @@
   (clojure.string/join (System/lineSeparator) strings))
 
 (defn- main [lhstext rhstext & args]
-  (tempfile/with-paths [l lhstext
-                        r rhstext]
+  (tempfile/with-filenames [l lhstext
+                            r rhstext]
     (clojure.string/trim-newline
      (with-out-str
        (apply (partial sut/-main l r) args)))))
