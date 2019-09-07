@@ -1,4 +1,5 @@
 (ns logdiff.tempfile
+  (:require [tempfile.core :as ttt])
   (:import [java.io File]
            [org.apache.commons.io FileUtils]))
 

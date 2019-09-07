@@ -2,8 +2,7 @@
   (:require [clojure.test :as t]
             [logdiff.core :as sut]
             [logdiff.domain :as domain]
-            [logdiff.tempfile :as tempfile]
-            [tempfile.core :as core]))
+            [logdiff.tempfile :as tempfile]))
 
 (declare logdiff)
 
