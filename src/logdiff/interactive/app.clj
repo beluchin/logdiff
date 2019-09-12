@@ -29,3 +29,6 @@
 
 (defn- logdiffline [lhs rhs]
   (output/one-line (domain/logdiffline (.trim lhs) (.trim rhs) {})))
+
+(defn previous []
+  )
