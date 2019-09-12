@@ -15,4 +15,4 @@
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext
                             r rhstext]
-    (sut/interactive l r)))
+    (sut/init l r)))

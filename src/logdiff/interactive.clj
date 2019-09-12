@@ -1,7 +1,7 @@
 (ns logdiff.interactive
   (:require [clojure.string :as str]
             [logdiff.interactive.app :as app])
-  (:import org.jline.reader.LineReaderBuilder
+  (:import (org.jline.reader LineReaderBuilder UserInterruptException)
            org.jline.terminal.TerminalBuilder))
 
 ;;;
@@ -11,21 +11,23 @@
 (declare print-basic-commands output execute)
 
 (defn run [lhs rhs]
-  (app/interactive lhs rhs)
+  (app/init lhs rhs)
   (let [term-builder (doto (TerminalBuilder/builder) (.system true))
         term (.build term-builder)
         reader (.. LineReaderBuilder (builder) (terminal term) (build))]
 
     (println "help: list available commands")
 
-    (loop [line (.readLine reader "logdiff> ")]
-      (let [quit? (contains? #{"q" "quit"} line)]
-        (case line
-          "help" (print-basic-commands)
-          ("q" "quit") nil 
-          (when-not (empty? line)
-            (output term (execute line))))
-        (if-not quit? (recur (.readLine reader "logdiff> ")))))))
+    (try 
+      (loop [line (.readLine reader "logdiff> ")]
+        (let [quit? (contains? #{"q" "quit"} line)]
+          (case line
+            "help" (print-basic-commands)
+            ("q" "quit") nil 
+            (when-not (empty? line)
+              (output term (execute line))))
+          (if-not quit? (recur (.readLine reader "logdiff> ")))))
+      (catch UserInterruptException _ (println "interrupted")))))
 
 (defn- print-basic-commands []
   (println (str/join "\n" 

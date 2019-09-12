@@ -10,7 +10,7 @@
 
 (declare session logdiffline)
 
-(defn interactive [lhs rhs]
+(defn init [lhs rhs]
   (reset! session {:lhs (files/get-line-seq lhs)
                    :rhs (files/get-line-seq rhs)
                    :pos 0}))
