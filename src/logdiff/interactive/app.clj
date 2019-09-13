@@ -8,7 +8,7 @@
 ;;; sits between the jline-related code and the domain 
 ;;;
 
-(declare session logdiffline)
+(declare session loglinediff)
 
 (defn init [lhs rhs]
   (reset! session {:lhs (files/get-line-seq lhs)
@@ -16,23 +16,27 @@
                    :pos 0}))
 
 (defn previous []
-  (swap! session update-in [:pos] dec)
+  
   (let [pos (:pos @session)
         lhs (:lhs @session)
         rhs (:rhs @session)]
-    (logdiffline (nth lhs pos) (nth rhs pos))))
+    (if (< 0 pos)
+      (do
+        (swap! session update-in [:pos] dec)
+        (loglinediff (nth lhs (dec pos)) (nth rhs (dec pos))))
+      :no-more-diffs)))
 
 (defn next []
   (let [pos (:pos @session)
         lhs (:lhs @session)
         rhs (:rhs @session)]
     (if (and (< pos (count lhs)) (< pos (count rhs)))
-      (let [result (logdiffline (nth lhs pos) (nth rhs pos))]
+      (let [result (loglinediff (nth lhs pos) (nth rhs pos))]
         (swap! session update-in [:pos] inc)
         result)
       :no-more-diffs)))
 
 (def ^:private session (atom nil))
 
-(defn- logdiffline [lhs rhs]
-  (output/one-line (domain/logdiffline (.trim lhs) (.trim rhs) {})))
+(defn- loglinediff [lhs rhs]
+  (output/one-line (domain/loglinediff (.trim lhs) (.trim rhs) {})))

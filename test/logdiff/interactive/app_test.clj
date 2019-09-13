@@ -16,7 +16,8 @@
   (do
     (interactive "a1\na2" "b1\nb2")
     (sut/next)
-    (t/is (= "[-a1-]{+b1+}" (sut/previous)))))
+    (t/is (= "[-a1-]{+b1+}" (sut/previous)))
+    (t/is (= :no-more-diffs (sut/previous)))))
 
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext
