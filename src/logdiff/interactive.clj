@@ -32,10 +32,13 @@
 (defn- print-basic-commands []
   (println (str/join "\n" 
                      ["n      show the next difference"
+                      "p      show the previous difference"
                       "q|quit exits the program"
                       "help   list available commands"])))
 
-(def ^:private functions {"n" app/next})
+(def ^:private functions
+  {"n" app/next
+   "p" app/previous})
 
 (defn- execute [line]
   ((get functions line)))
