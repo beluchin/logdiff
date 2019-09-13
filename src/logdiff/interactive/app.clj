@@ -15,6 +15,13 @@
                    :rhs (files/get-line-seq rhs)
                    :pos 0}))
 
+(defn previous []
+  (swap! session update-in [:pos] dec)
+  (let [pos (:pos @session)
+        lhs (:lhs @session)
+        rhs (:rhs @session)]
+    (logdiffline (nth lhs pos) (nth rhs pos))))
+
 (defn next []
   (let [pos (:pos @session)
         lhs (:lhs @session)
@@ -29,6 +36,3 @@
 
 (defn- logdiffline [lhs rhs]
   (output/one-line (domain/logdiffline (.trim lhs) (.trim rhs) {})))
-
-(defn previous []
-  )
