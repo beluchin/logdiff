@@ -41,7 +41,7 @@
    "p" app/previous})
 
 (defn- execute [line]
-  ((get functions line)))
+  ((get functions line (constantly :???))))
 
 (defn- output [term text]
   (.. term (writer) (println (str "==> " text)))
