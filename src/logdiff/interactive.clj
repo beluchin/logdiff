@@ -21,10 +21,9 @@
     (try 
       (loop [line (.readLine reader "logdiff> ")]
         (let [quit? (contains? #{"q" "quit"} line)]
-          (case line
-            ("q" "quit") nil 
-            (output term (get-output line)))
-          (if-not quit? (recur (.readLine reader "logdiff> ")))))
+          (when-not quit?
+            (output term (get-output line))
+            (recur (.readLine reader "logdiff> ")))))
       (catch UserInterruptException _ (println "interrupted")))))
 
 (defn- print-basic-commands []
