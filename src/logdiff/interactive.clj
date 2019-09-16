@@ -8,22 +8,23 @@
 ;;; this namespace contains the jline-related code exclusively
 ;;;
 
-(declare print-usage output get-output)
+(declare print-usage output get-output readLine)
 
 (defn run [lhs rhs]
   (app/init lhs rhs)
   (let [term-builder (doto (TerminalBuilder/builder) (.system true))
         term (.build term-builder)
-        reader (.. LineReaderBuilder (builder) (terminal term) (build))]
+        reader (.. LineReaderBuilder (builder) (terminal term) (build))
+        readLine #(.trim (.readLine reader "logdiff> "))]
 
     (println "help: list available commands")
 
     (try 
-      (loop [line (.readLine reader "logdiff> ")]
+      (loop [line (readLine)]
         (let [quit? (contains? #{"q" "quit"} line)]
           (when-not quit?
             (output term (get-output line))
-            (recur (.readLine reader "logdiff> ")))))
+            (recur (readLine)))))
       (catch UserInterruptException _ (println "interrupted")))))
 
 (defn- print-usage []
@@ -31,12 +32,15 @@
                      ["n       show the next difference"
                       "p       show the previous difference"
                       ""
+                      "i       toggle showing identical lines (default don't show)"
+                      ""
                       "<enter> repeats the last command"
                       "help    list available commands"
                       "q|quit  exits the program"])))
 
 (def ^:private functions
-  {"n"    app/next
+  {"i"    app/toggle-showing-identical
+   "n"    app/next
    "p"    app/previous
    "help" print-usage})
 

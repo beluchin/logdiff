@@ -35,6 +35,8 @@
         (loglinediff (nth lhs (dec pos)) (nth rhs (dec pos))))
       :no-more-diffs)))
 
+(defn toggle-showing-identical [] "toggled showing identical")
+
 (def ^:private session (atom nil))
 
 (defn- loglinediff [lhs rhs]
