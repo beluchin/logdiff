@@ -8,7 +8,7 @@
 ;;; this namespace contains the jline-related code exclusively
 ;;;
 
-(declare print-basic-commands output execute)
+(declare print-basic-commands output get-output)
 
 (defn run [lhs rhs]
   (app/init lhs rhs)
@@ -24,24 +24,41 @@
           (case line
             "help" (print-basic-commands)
             ("q" "quit") nil 
-            (when-not (empty? line)
-              (output term (execute line))))
+            (output term (get-output line)))
           (if-not quit? (recur (.readLine reader "logdiff> ")))))
       (catch UserInterruptException _ (println "interrupted")))))
 
 (defn- print-basic-commands []
   (println (str/join "\n" 
-                     ["n      show the next difference"
-                      "p      show the previous difference"
-                      "q|quit exits the program"
-                      "help   list available commands"])))
+                     ["<enter> repeats the last command"
+                      "n       show the next difference"
+                      "p       show the previous difference"
+                      ""
+                      "q|quit  exits the program"
+                      "help    list available commands"])))
 
 (def ^:private functions
   {"n" app/next
    "p" app/previous})
 
-(defn- execute [line]
-  ((get functions line (constantly :???))))
+(def ^:private last-command (atom nil))
+
+(defn- get-last-command [] @last-command)
+
+(defn- put-last [command] (reset! last-command command))
+
+(defn- get-command [line]
+  (if (empty? line)
+    (get-last-command)
+    (let [command (get functions line)]
+      (put-last command)
+      command)))
+
+(defn- get-output [line]
+  (let [command (get-command line)]
+    (if (nil? command)
+      :???
+      (command))))
 
 (defn- output [term text]
   (.. term (writer) (println (str "==> " text)))
