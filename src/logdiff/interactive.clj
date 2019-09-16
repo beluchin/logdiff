@@ -8,7 +8,7 @@
 ;;; this namespace contains the jline-related code exclusively
 ;;;
 
-(declare print-basic-commands output get-output)
+(declare print-usage output get-output)
 
 (defn run [lhs rhs]
   (app/init lhs rhs)
@@ -26,19 +26,19 @@
             (recur (.readLine reader "logdiff> ")))))
       (catch UserInterruptException _ (println "interrupted")))))
 
-(defn- print-basic-commands []
+(defn- print-usage []
   (println (str/join "\n" 
-                     ["<enter> repeats the last command"
-                      "n       show the next difference"
+                     ["n       show the next difference"
                       "p       show the previous difference"
                       ""
-                      "q|quit  exits the program"
-                      "help    list available commands"])))
+                      "<enter> repeats the last command"
+                      "help    list available commands"
+                      "q|quit  exits the program"])))
 
 (def ^:private functions
   {"n"    app/next
    "p"    app/previous
-   "help" print-basic-commands})
+   "help" print-usage})
 
 (def ^:private last-command (atom nil))
 
