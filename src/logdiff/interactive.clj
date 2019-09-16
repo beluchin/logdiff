@@ -22,7 +22,6 @@
       (loop [line (.readLine reader "logdiff> ")]
         (let [quit? (contains? #{"q" "quit"} line)]
           (case line
-            "help" (print-basic-commands)
             ("q" "quit") nil 
             (output term (get-output line)))
           (if-not quit? (recur (.readLine reader "logdiff> ")))))
@@ -38,8 +37,9 @@
                       "help    list available commands"])))
 
 (def ^:private functions
-  {"n" app/next
-   "p" app/previous})
+  {"n"    app/next
+   "p"    app/previous
+   "help" print-basic-commands})
 
 (def ^:private last-command (atom nil))
 
