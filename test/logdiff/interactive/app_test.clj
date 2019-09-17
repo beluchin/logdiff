@@ -19,6 +19,12 @@
     (t/is (= "[-a1-]{+b1+}" (sut/previous)))
     (t/is (= :no-more-diffs (sut/previous)))))
 
+(t/deftest show-identical-lines
+  (t/testing "default is don't show"
+    (do
+      (interactive "a" "a")
+      (t/is (= :no-more-diffs (sut/next))))))
+
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext
                             r rhstext]
