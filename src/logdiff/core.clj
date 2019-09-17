@@ -23,11 +23,8 @@
 (defn- print-if-not-empty [s]
   (when s (println s)))
 
-(defn- all-diff-ignored? [line-diffs]
-  (every? #(:ignored %) (remove string? line-diffs)))
-
 (defn- output [diffs]
-  (let [ss (map output/one-line (remove all-diff-ignored? diffs))]
+  (let [ss (map output/one-line (remove domain/all-diff-ignored? diffs))]
     (when (not= ss []) (str/join (System/lineSeparator) ss))))
 
 

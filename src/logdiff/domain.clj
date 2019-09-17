@@ -8,6 +8,12 @@
   (let [t-p (internal/trans-preds rules)]
     (map #(internal/logdiffline-internal %1 %2 t-p) lhs rhs)))
 
+(defn all-diff-ignored? [line-diffs]
+  (every? #(:ignored %) (remove string? line-diffs)))
+
+(defn loglinediff [lhs rhs rules]
+  (internal/logdiffline-internal lhs rhs (internal/trans-preds rules)))
+
 
 (comment
   (seq (.split split-pattern "hello        world"))

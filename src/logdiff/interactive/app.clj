@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [next])
   (:require [logdiff.output :as output]
             [logdiff.files :as files]
-            [logdiff.interactive.domain :as domain]))
+            [logdiff.domain :as domain]))
 
 ;;;
 ;;; sits between the jline-related code and the domain 
@@ -16,14 +16,17 @@
                    :pos 0}))
 
 (defn next []
-  (let [pos (:pos @session)
-        lhs (:lhs @session)
+  (let [lhs (:lhs @session)
         rhs (:rhs @session)]
-    (if (and (< pos (count lhs)))
-      (let [result (loglinediff (nth lhs pos) (nth rhs pos))]
-        (swap! session update-in [:pos] inc)
-        result)
-      :no-more-diffs)))
+    (loop [pos (:pos @session)]
+      (if (< pos (count lhs))
+        (let [diff (domain/loglinediff (nth lhs pos) (nth rhs pos) {})]
+          (if (domain/all-diff-ignored? diff)
+            (recur (inc pos))
+            (do
+              (swap! session assoc-in [:pos] (inc pos))
+              (output/one-line diff))))
+        :no-more-diffs))))
 
 (defn previous []
   (let [pos (:pos @session)
