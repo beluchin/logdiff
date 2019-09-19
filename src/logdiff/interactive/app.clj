@@ -8,35 +8,35 @@
 ;;; sits between the jline-related code and the domain 
 ;;;
 
-(declare session loglinediff)
+(declare session loglinediff advance)
 
 (defn init [lhs rhs]
   (reset! session {:lhs (files/get-line-seq lhs)
                    :rhs (files/get-line-seq rhs)
-                   :pos 0}))
+                   :pos -1}))
 
 (defn next []
-  (let [lhs (:lhs @session)
-        rhs (:rhs @session)]
-    (loop [pos (:pos @session)]
-      (if (< pos (count lhs))
-        (let [diff (domain/loglinediff (nth lhs pos) (nth rhs pos) {})]
-          (if (domain/all-diff-ignored? diff)
-            (recur (inc pos))
-            (do
-              (swap! session assoc-in [:pos] (inc pos))
-              (output/one-line diff))))
-        :no-more-diffs))))
+  (advance inc))
 
 (defn previous []
-  (let [pos (:pos @session)
-        lhs (:lhs @session)
-        rhs (:rhs @session)]
-    (if (< 0 pos)
-      (do
-        (swap! session update-in [:pos] dec)
-        (loglinediff (nth lhs (dec pos)) (nth rhs (dec pos))))
-      :no-more-diffs)))
+  (advance dec))
+
+(defn- advance [dir-fn]
+  (let [lhs (:lhs @session)
+        rhs (:rhs @session)
+        ok-fn (if (= inc dir-fn)
+                 #(< % (count lhs))
+                 #(<= 0 %))]
+    (loop [pos (:pos @session)]
+      (let [newpos (dir-fn pos)]
+        (if (ok-fn newpos)
+          (let [diff (domain/loglinediff (nth lhs newpos) (nth rhs newpos) {})]
+            (if (domain/all-diff-ignored? diff)
+              (recur newpos)
+              (do
+                (swap! session assoc-in [:pos] newpos)
+                (output/one-line diff))))
+          :no-more-diffs)))))
 
 (defn toggle-showing-identical [] "toggled showing identical")
 
