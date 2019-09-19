@@ -19,19 +19,26 @@
     (t/is (= "[-a1-]{+b1+}" (sut/previous)))
     (t/is (= :no-more-diffs (sut/previous)))))
 
-(t/deftest lines-with-no-diffs-next
-  (do
-    (interactive "a" "a")
-    (t/is (= :no-more-diffs (sut/next))))
-  (do
-    (interactive "a\nb" "b\nb")
-    (sut/next)
-    (t/is (= :no-more-diffs (sut/next))))
-  (do
-    (interactive "a\nb\nc" "b\nb\nb")
-    (sut/next)
-    (t/is (= "[-c-]{+b+}" (sut/next)))
-    (t/is (= :no-more-diffs (sut/next)))))
+(t/deftest lines-with-no-diffs
+  (t/testing "next"
+    (do
+      (interactive "a" "a")
+      (t/is (= :no-more-diffs (sut/next))))
+    (do
+      (interactive "a\nb" "b\nb")
+      (sut/next)
+      (t/is (= :no-more-diffs (sut/next))))
+    (do
+      (interactive "a\nb\nc" "b\nb\nb")
+      (sut/next)
+      (t/is (= "[-c-]{+b+}" (sut/next)))
+      (t/is (= :no-more-diffs (sut/next)))))
+  (t/testing "previous"
+    (do
+      (interactive "a\nb" "a\na")
+      (sut/next)
+      (sut/previous)
+      (t/is (= :no-more-diffs (sut/previous))))))
 
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext
