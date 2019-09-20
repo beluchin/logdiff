@@ -1,6 +1,16 @@
 # logdiff
 
-FIXME: description
+* compares two log snippets
+* differences are higlighted - a la wdiff 
+$ logdiff a b
+[-a-]{+b+}
+
+$ wdiff <(echo a) <(echo b)
+[-a-]{+b+}
+
+* some differences can be ignored by specifying rules
+$ logdiff a b '{"a" "b"}
+ == no output ==
 
 ## Installation
 
