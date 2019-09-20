@@ -40,11 +40,11 @@
       (t/is (= :no-more-diffs (sut/next)))))
   (t/testing "previous"
     (do
-      (interactive "a\nb" "a\na")
+      (interactive "a\nb\nc" "a\na\na")
       (sut/next)
-      (sut/previous)
-      ;;; postponed
-      #_(t/is (= :no-more-diffs (sut/previous))))))
+      (sut/next)
+      (t/is (= "[-b-]{+a+}" (sut/previous)))
+      (t/is (= :no-more-diffs (sut/previous))))))
 
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext
