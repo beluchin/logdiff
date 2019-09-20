@@ -1,16 +1,35 @@
 # logdiff
 
-* compares two log snippets
-* differences are higlighted - a la wdiff 
-$ logdiff a b
+* compares two text files.
+* it can be configured to ignore certain differences which 
+makes it useful when comparing snippets from two log files - hence 
+the name `logdiff`
+* differences are highlighted - a la `wdiff` 
+```
+$ logdiff <(echo a) <(echo b)
 [-a-]{+b+}
 
 $ wdiff <(echo a) <(echo b)
 [-a-]{+b+}
+```
 
-* some differences can be ignored by specifying rules
-$ logdiff a b '{"a" "b"}
- == no output ==
+<br>
+
+* differences can be ignored by specifying rules<br>
+`{ "hello" "hola" }` indicates to ignore the difference when `"hola"` 
+is on the same place as `"hello"`
+```
+$ logdiff <(echo hello) <(echo hola) '{"hello" "hola"}'
+== no output ==
+```
+
+<br>
+
+* highlights ignored differences
+```
+$ logdiff <(echo hello a) <(echo hola b) '{"hello" "hola"}'
+<hello><hola> [-a-]{+b+}
+```
 
 ## Installation
 
