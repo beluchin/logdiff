@@ -6,13 +6,13 @@
    rules:    a map of rules"
   [lhs rhs rules]
   (let [t-p (internal/trans-preds rules)]
-    (map #(internal/logdiffline-internal %1 %2 t-p) lhs rhs)))
+    (map #(internal/logdiffline %1 %2 t-p) lhs rhs)))
 
 (defn all-diff-ignored? [line-diffs]
   (every? #(:ignored %) (remove string? line-diffs)))
 
 (defn loglinediff [lhs rhs rules]
-  (internal/logdiffline-internal lhs rhs (internal/trans-preds rules)))
+  (internal/logdiffline lhs rhs (internal/trans-preds rules)))
 
 
 (comment

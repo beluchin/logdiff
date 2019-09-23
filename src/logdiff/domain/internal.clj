@@ -6,7 +6,7 @@
 (defn trans-preds [rules]
   (set (map trans-pred rules)))
 
-(defn logdiffline-internal [lhs rhs trans-preds]
+(defn logdiffline [lhs rhs trans-preds]
   (let [twd (tokenized-word-diffs lhs rhs trans-preds)]
     (map #(if (string? (first %)) (string/join %) (first %))
          (partition-by #(string? %) twd))))
