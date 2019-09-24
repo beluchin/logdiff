@@ -1,21 +1,46 @@
 (ns logdiff.domain.internal
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [clojure.string :as str]))
 
-(declare trans-pred tokenized-word-diffs)
+(declare trans-pred word-diffs join-strings split-pattern
+         structurally-different?)
 
 (defn trans-preds [rules]
   (set (map trans-pred rules)))
 
 (defn logdiffline [lhs rhs trans-preds]
-  (let [twd (tokenized-word-diffs lhs rhs trans-preds)]
-    (map #(if (string? (first %)) (string/join %) (first %))
-         (partition-by #(string? %) twd))))
+  (let [ltokens (.split split-pattern lhs)
+        rtokens (.split split-pattern rhs)]
+    (if (structurally-different? ltokens rtokens)
+      :structurally-different
+      (join-strings (word-diffs ltokens rtokens trans-preds)))))
 
 (def ^:const line-delimiter (System/lineSeparator))
-(def ^:const token-delimiter "[\\s\\[\\]]")
+(def ^:const word-delimiters #{" " "[" "]"})
+
+;;; derived from above
+(def ^:const token-delimiter (letfn [(escaped [coll] (map #(str "\\" %) coll))]
+                               (format "[%s]" (apply str (escaped word-delimiters)))))
 (def ^:const split-pattern (re-pattern (format "(?<=\\S)(?=%s)|(?<=%s)(?=\\S)"
                                                token-delimiter
                                                token-delimiter)))
+
+(defn- word-delimiter? [x]
+  (contains? word-delimiters x))
+
+(defn- word-delimiter-mismatch? [l r]
+  (or (and (word-delimiter? l) (not (word-delimiter? r)))
+      (and (not (word-delimiter? l)) (word-delimiter? r))))
+
+(defn- structurally-different? [ltokens rtokens]
+  (some (fn [[l r]] (word-delimiter-mismatch? l r))
+                     
+;;; https://stackoverflow.com/a/2588385/614800
+        (map vector ltokens rtokens)))
+
+(defn- join-strings [word-diffs]
+  (map #(if (string? (first %)) (string/join %) (first %))
+         (partition-by #(string? %) word-diffs)))
 
 (defn- to-num-or-na [xs]
   (try
@@ -60,11 +85,9 @@
   [lhs rhs idx trans-preds]
   (if (= lhs rhs) lhs (diff lhs rhs idx trans-preds)))
 
-(defn- tokenized-word-diffs [l r trans-preds]
-  (let [lwords (.split split-pattern l)
-        rwords (.split split-pattern r)
-        range-from-1 (drop 1 (range))]
-    (map #(diff-or-token %1 %2 %3 trans-preds) lwords rwords range-from-1)))
+(defn- word-diffs [ltokens rtokens trans-preds]
+  (let [range-from-1 (drop 1 (range))]
+    (map #(diff-or-token %1 %2 %3 trans-preds) ltokens rtokens range-from-1)))
 
 (defn- contains-diff? [line]
   (some vector? line))
@@ -82,3 +105,13 @@
           predicate-builder (:predicate-builder trans-pred)]
       [transformer (predicate-builder v)])))
 
+
+(comment
+  (contains? #{:a} :a)
+  (some (constantly true) #{} #{})
+  (seq (.split split-pattern "hello     dolly"))
+  (clojure.string/join "" #{"a" "b"})
+  (str "a" "b")
+  (format "[%s]" "hello")
+                 
+  )

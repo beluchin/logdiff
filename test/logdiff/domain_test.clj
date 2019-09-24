@@ -29,15 +29,18 @@
     (t/is (= [{:lhs "hello" :rhs "goodbye" :ignored false} " world"]
              (sut/loglinediff "hello world" "goodbye world" {}))))
 
-  (t/testing "structurally different lines"
-    (t/is (= :structurally-different
-             (sut/loglinediff "6:45 [main] count: 42"
-                              "10:32 [main] Foo[bar:42, baz:58]"
-                              {}))))
-
   (t/testing "identical lines"
     (t/is (= ["hello world"]
              (sut/loglinediff "hello world" "hello world" {})))))
+
+(t/deftest structurally-different
+  (t/testing "token/word mismatch"
+    (t/is (= :structurally-different
+             (sut/loglinediff "word1 [word2]"
+                              "word1 word2"
+                              {}))))
+  (t/testing "token mismatch")
+  (t/testing "different length"))
 
 (t/deftest rules
   (t/testing "word"
