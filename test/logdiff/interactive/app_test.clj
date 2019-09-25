@@ -1,5 +1,6 @@
 (ns logdiff.interactive.app-test
   (:require [clojure.test :as t]
+            [logdiff.domain :as domain]
             [logdiff.interactive.app :as sut]
             [logdiff.tempfile :as tempfile]))
 
@@ -45,6 +46,11 @@
       (sut/next)
       (t/is (= "[-b-]{+a+}" (sut/previous)))
       (t/is (= :no-more-diffs (sut/previous))))))
+
+(t/deftest structurally-different
+  (with-redefs [domain/loglinediff (constantly :structurally-different)]
+    (interactive "a" "b")
+    (t/is (= "[-[-a-]-]{+{+b+}+}" (sut/next)))))
 
 (defn- interactive [lhstext rhstext]
   (tempfile/with-filenames [l lhstext

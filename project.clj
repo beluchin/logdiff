@@ -8,12 +8,13 @@
                  ;; flycheck-clojure setup
                  [org.clojure/clojure "1.9.0"]
                  [org.clojure/core.typed "0.5.3"  :classifier "slim"]
-                 [tortue/spy "1.4.0" :scope "test"]
-
-                 [tempfile "0.2.0" :scope "test"]
+                 
                  [org.jline/jline "3.11.0"]
                  [org.fusesource.jansi/jansi "1.18"]
-                 #_[net.java.dev.jna/jna "5.3.1"]]
+                 #_[net.java.dev.jna/jna "5.3.1"]
+
+                 [tortue/spy "2.0.0" :scope "test"]
+                 [tempfile "0.2.0" :scope "test"]]
                  
   :profiles {:uberjar {:aot :all}
 

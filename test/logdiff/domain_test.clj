@@ -36,10 +36,12 @@
 (t/deftest structurally-different
   (t/testing "token/word mismatch"
     (t/is (= :structurally-different
-             (sut/loglinediff "word1 [word2]"
-                              "word1 word2"
-                              {}))))
-  (t/testing "token mismatch")
+             (sut/loglinediff "word1 [word2]" "word1 word2" {}))))
+
+  (t/testing "token mismatch"
+    (t/is (= :structurally-different
+             (sut/loglinediff "a[" "a]" {}))))
+
   (t/testing "different length"))
 
 (t/deftest rules
