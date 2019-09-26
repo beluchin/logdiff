@@ -14,7 +14,11 @@
   (t/testing "identical lines"
     (t/is (let [s "hello world"] (= [[s]] (sut/logdiff [s] [s] {})))))
 
-  (t/testing "multilines"
+  (t/testing "structurally different"
+    (t/is (= [{:lhs "a b" :rhs "a [b]" :diff-type :structurally-different}]
+             (sut/logdiff ["a b"] ["a [b]"]))))
+
+  (t/testing "many lines"
     (t/is (let [first-line "first line is identical"]
             (= [[first-line]
                 ["second has " {:lhs "one" :rhs "una" :ignored false} " difference"]]
