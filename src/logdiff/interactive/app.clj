@@ -24,23 +24,20 @@
 (defn- advance [dir-fn]
   (let [lhs (:lhs @session)
         rhs (:rhs @session)
-        ok-fn (if (= inc dir-fn)
-                 #(< % (count lhs))
-                 #(<= 0 %))]
+        valid? #(and (<= 0 %) (< % (count lhs)))]
     (loop [pos (:pos @session)]
       (let [newpos (dir-fn pos)]
-        (if (ok-fn newpos)
-          (let [diff (domain/loglinediff (nth lhs newpos) (nth rhs newpos) {})]
+        (if (valid? newpos)
+          (let [lline (nth lhs newpos)
+                rline (nth rhs newpos)
+                diff (domain/loglinediff lline rline {})]
             (if (domain/all-diff-ignored? diff)
               (recur newpos)
               (do
                 (swap! session assoc-in [:pos] newpos)
-                (output/one-line diff))))
+                (output/one-line lline rline diff))))
           :no-more-diffs)))))
 
 (defn toggle-showing-identical [] "toggled showing identical")
 
 (def ^:private session (atom nil))
-
-(defn- loglinediff [lhs rhs]
-  (output/one-line (domain/loglinediff (.trim lhs) (.trim rhs) {})))

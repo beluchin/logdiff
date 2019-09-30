@@ -8,7 +8,7 @@
 (defn trans-preds [rules]
   (set (map trans-pred rules)))
 
-(defn logdiffline [lhs rhs trans-preds]
+(defn loglinediff [lhs rhs trans-preds]
   (let [ltokens (.split split-pattern lhs)
         rtokens (.split split-pattern rhs)]
     (if (structurally-different? ltokens rtokens)
