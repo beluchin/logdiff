@@ -1,6 +1,7 @@
 (ns logdiff.interactive.app-test
   (:require [clojure.test :as t]
             [logdiff.domain :as domain]
+            [logdiff.domain.model :as model]
             [logdiff.interactive.app :as sut]
             [logdiff.tempfile :as tempfile]))
 
@@ -48,7 +49,7 @@
       (t/is (= :no-more-diffs (sut/previous))))))
 
 (t/deftest structurally-different
-  (with-redefs [domain/log-line-diff (constantly :structurally-different)]
+  (with-redefs [domain/log-line-diff (constantly (model/->WholeLineDiff "a" "b"))]
     (interactive "a" "b")
     (t/is (= "[-[-a-]-]{+{+b+}+}" (sut/next)))))
 
