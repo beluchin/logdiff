@@ -1,16 +1,20 @@
 (ns logdiff.output
   (:refer-clojure :exclude [flatten])
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:import [logdiff.domain.model TokenDiffs WholeLineDiff]))
 
 (declare flatten-if-diff structurally-different-output)
 
-(defn one-line [lhs rhs line-diffs]
-  (if (= :structurally-different line-diffs)
-    (structurally-different-output lhs rhs)
-    (str/join (map flatten-if-diff line-diffs))))
+(defprotocol LineDiffToString
+  (to-string [line-diff]))
 
-(defn- structurally-different-output [lline rline]
-  (format "[-[-%s-]-]{+{+%s+}+}" lline rline))
+(extend-protocol LineDiffToString
+  TokenDiffs
+  (to-string [this]
+    (str/join (map flatten-if-diff (:diffs this))))
+
+  WholeLineDiff
+  (to-string [this] (format "[-[-%s-]-]{+{+%s+}+}" (:lhs this) (:rhs this))))
 
 (defn- flatten [{:keys [lhs rhs ignored]}]
   (if ignored

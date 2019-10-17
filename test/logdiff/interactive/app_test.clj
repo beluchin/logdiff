@@ -48,7 +48,7 @@
       (t/is (= :no-more-diffs (sut/previous))))))
 
 (t/deftest structurally-different
-  (with-redefs [domain/loglinediff (constantly :structurally-different)]
+  (with-redefs [domain/log-line-diff (constantly :structurally-different)]
     (interactive "a" "b")
     (t/is (= "[-[-a-]-]{+{+b+}+}" (sut/next)))))
 

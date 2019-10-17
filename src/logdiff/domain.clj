@@ -1,32 +1,35 @@
 (ns logdiff.domain
-  (:require [logdiff.domain.internal :as internal]))
-
-(declare batch-output)
+  (:require [logdiff.domain.model :as model]
+            [logdiff.domain.internal :as internal])
+  (:import [logdiff.domain.model WholeLineDiff TokenDiffs]))
 
 (defn logdiff 
   "lhs, rhs: sequences of lines (line endings should be trimmed prior)
    rules:    a map of rules"
   [lhs rhs rules]
   (let [t-p (internal/trans-preds rules)]
-    (map
-     #(batch-output (internal/loglinediff %1 %2 t-p) %1 %2)
-     lhs rhs)
-    #_(map #(internal/logdiffline %1 %2 t-p) lhs rhs)))
+    (map #(internal/log-line-diff %1 %2 t-p) lhs rhs)))
 
-(defn all-diff-ignored? [line-diffs]
-  (if (= :structurally-different line-diffs)
-    false
-    (every? #(:ignored %) (remove string? line-diffs))))
+(defn log-line-diff [lhs rhs rules]
+  (internal/log-line-diff lhs rhs (internal/trans-preds rules)))
 
-(defn loglinediff [lhs rhs rules]
-  (internal/loglinediff lhs rhs (internal/trans-preds rules)))
+(defprotocol AllDiffIgnored?
+  (all-diff-ignored? [line-diffs]))
 
-(defn- batch-output [internal-diff lline rline]
-  (if (= :structurally-different internal-diff)
-    {:lhs lline :rhs rline :type :structurally-different}
-    internal-diff))
+(extend-protocol AllDiffIgnored?
+  WholeLineDiff
+  (all-diff-ignored? [_] false)
+
+  TokenDiffs
+  (all-diff-ignored? [this]
+    (every? #(:ignored %) (remove string? (:diffs this)))))
+
 
 (comment
+  (defrecord R [])
+  (type (->R))
+  R
+  (defmulti m (fn [x] {}))
   (seq (.split split-pattern "hello        world"))
   (line-word-diffs "hello world" "goodbye world" {})
   (partition-by #(string? %) [["a" "b"] " " "c"])

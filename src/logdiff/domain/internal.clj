@@ -1,6 +1,7 @@
 (ns logdiff.domain.internal
   (:require [clojure.string :as string]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [logdiff.domain.model :as model]))
 
 (declare trans-pred word-diffs join-strings split-pattern
          structurally-different?)
@@ -8,12 +9,12 @@
 (defn trans-preds [rules]
   (set (map trans-pred rules)))
 
-(defn loglinediff [lhs rhs trans-preds]
+(defn log-line-diff [lhs rhs trans-preds]
   (let [ltokens (.split split-pattern lhs)
         rtokens (.split split-pattern rhs)]
     (if (structurally-different? ltokens rtokens)
-      :structurally-different
-      (join-strings (word-diffs ltokens rtokens trans-preds)))))
+      (model/->WholeLineDiff lhs rhs)
+      (model/->TokenDiffs (join-strings (word-diffs ltokens rtokens trans-preds))))))
 
 (def ^:const line-delimiter (System/lineSeparator))
 (def ^:const word-delimiters #{" " "[" "]"})

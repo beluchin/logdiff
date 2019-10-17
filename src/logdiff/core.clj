@@ -23,12 +23,8 @@
 (defn- print-if-not-empty [s]
   (when s (println s)))
 
-(defn- string-line-diff [d]
-  (if-not (= :structurally-different (get d :type))
-    (output/one-line nil nil d)))
-
 (defn- output [diffs]
-  (let [ss (map string-line-diff (remove domain/all-diff-ignored? diffs))]
+  (let [ss (map output/output-line (remove domain/all-diff-ignored? diffs))]
     (when (not= ss []) (str/join (System/lineSeparator) ss))))
 
 

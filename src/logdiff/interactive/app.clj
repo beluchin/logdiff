@@ -15,6 +15,8 @@
                    :rhs (files/get-line-seq rhs)
                    :pos -1}))
 
+(defn toggle-showing-identical [] "toggled showing identical")
+
 (defn next []
   (advance inc))
 
@@ -30,14 +32,12 @@
         (if (valid? newpos)
           (let [lline (nth lhs newpos)
                 rline (nth rhs newpos)
-                diff (domain/loglinediff lline rline {})]
+                diff (domain/log-line-diff lline rline {})]
             (if (domain/all-diff-ignored? diff)
               (recur newpos)
               (do
                 (swap! session assoc-in [:pos] newpos)
-                (output/one-line lline rline diff))))
+                (output/to-string diff))))
           :no-more-diffs)))))
-
-(defn toggle-showing-identical [] "toggled showing identical")
 
 (def ^:private session (atom nil))
