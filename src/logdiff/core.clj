@@ -24,7 +24,7 @@
   (when s (println s)))
 
 (defn- output [diffs]
-  (let [ss (map output/output-line (remove domain/all-diff-ignored? diffs))]
+  (let [ss (map output/to-string (remove domain/all-diff-ignored? diffs))]
     (when (not= ss []) (str/join (System/lineSeparator) ss))))
 
 
