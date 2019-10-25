@@ -1,7 +1,8 @@
 (ns logdiff.domain
-  (:require [logdiff.domain.model :as model]
-            [logdiff.domain.internal :as internal])
-  (:import [logdiff.domain.model WholeLineDiff TokenDiffs]))
+  (:require [logdiff.domain.internal :as internal]
+            [logdiff.domain.protocols :as protocols]
+            logdiff.domain.difftypes)
+  (:import logdiff.domain.model.WholeLineDiff))
 
 (defn logdiff 
   "lhs, rhs: sequences of lines (line endings should be trimmed prior)
@@ -13,16 +14,9 @@
 (defn log-line-diff [lhs rhs rules]
   (internal/log-line-diff lhs rhs (internal/trans-preds rules)))
 
-(defprotocol AllDiffIgnored?
-  (all-diff-ignored? [line-diffs]))
-
-(extend-protocol AllDiffIgnored?
+(extend-protocol protocols/AllDiffIgnored?
   WholeLineDiff
-  (all-diff-ignored? [_] false)
-
-  TokenDiffs
-  (all-diff-ignored? [this]
-    (every? #(:ignored %) (remove string? (:diffs this)))))
+  (all-diff-ignored? [_] false))
 
 
 (comment

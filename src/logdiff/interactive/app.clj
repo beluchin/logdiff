@@ -1,8 +1,9 @@
 (ns logdiff.interactive.app
   (:refer-clojure :exclude [next])
-  (:require [logdiff.output :as output]
+  (:require [logdiff.domain :as domain]
+            [logdiff.domain.protocols :as protocols]
             [logdiff.files :as files]
-            [logdiff.domain :as domain]))
+            [logdiff.output :as output]))
 
 ;;;
 ;;; sits between the jline-related code and the domain 
@@ -33,7 +34,7 @@
           (let [lline (nth lhs newpos)
                 rline (nth rhs newpos)
                 diff (domain/log-line-diff lline rline {})]
-            (if (domain/all-diff-ignored? diff)
+            (if (protocols/all-diff-ignored? diff)
               (recur newpos)
               (do
                 (swap! session assoc-in [:pos] newpos)

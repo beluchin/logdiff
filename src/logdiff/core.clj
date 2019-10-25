@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [clojure.string :as str]
             [logdiff.domain :as domain]
+            [logdiff.domain.protocols :as protocols]
             [logdiff.files :as files]
             [logdiff.interactive :as interactive]
             [logdiff.output :as output]))
@@ -24,7 +25,7 @@
   (when s (println s)))
 
 (defn- output [diffs]
-  (let [ss (map output/to-string (remove domain/all-diff-ignored? diffs))]
+  (let [ss (map output/to-string (remove protocols/all-diff-ignored? diffs))]
     (when (not= ss []) (str/join (System/lineSeparator) ss))))
 
 
