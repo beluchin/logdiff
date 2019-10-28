@@ -1,7 +1,5 @@
 (ns logdiff.domain
-  (:require [logdiff.domain.internal :as internal]
-            [logdiff.domain.protocols :as protocols]
-            logdiff.domain.difftypes))
+  (:require [logdiff.domain.internal :as internal]))
 
 (defn logdiff 
   "lhs, rhs: sequences of lines (line endings should be trimmed prior)

@@ -1,9 +1,8 @@
 (ns logdiff.interactive.app
   (:refer-clojure :exclude [next])
   (:require [logdiff.domain :as domain]
-            [logdiff.domain.protocols :as protocols]
             [logdiff.files :as files]
-            [logdiff.output :as output]))
+            [logdiff.protocols :as protocols]))
 
 ;;;
 ;;; sits between the jline-related code and the domain 
@@ -38,7 +37,7 @@
               (recur newpos)
               (do
                 (swap! session assoc-in [:pos] newpos)
-                (output/to-string diff))))
+                (protocols/to-string diff))))
           :no-more-diffs)))))
 
 (def ^:private session (atom nil))

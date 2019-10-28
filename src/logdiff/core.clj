@@ -2,10 +2,10 @@
   (:gen-class)
   (:require [clojure.string :as str]
             [logdiff.domain :as domain]
-            [logdiff.domain.protocols :as protocols]
+            logdiff.difftypes
             [logdiff.files :as files]
             [logdiff.interactive :as interactive]
-            [logdiff.output :as output]))
+	        [logdiff.protocols :as protocols]))
 
 (declare print-if-not-empty output)
 
@@ -25,7 +25,7 @@
   (when s (println s)))
 
 (defn- output [diffs]
-  (let [ss (map output/to-string (remove protocols/all-diff-ignored? diffs))]
+  (let [ss (map protocols/to-string (remove protocols/all-diff-ignored? diffs))]
     (when (not= ss []) (str/join (System/lineSeparator) ss))))
 
 
@@ -35,7 +35,7 @@
   (domain/logdiff ["hello world"] ["goodbye world"] {}) ;; (({:lhs "hello", :rhs "goodbye", :ignored false} " world"))
   (output [[{:lhs "hello", :rhs "goodbye", :ignored false} " world"]])
   (all-diff-ignored? [{:lhs "hello", :rhs "goodbye", :ignored false} " world"])
-  (output/one-line [{:lhs "hello", :rhs "goodbye", :ignored false} " world"])
+  #_(output/one-line [{:lhs "hello", :rhs "goodbye", :ignored false} " world"])
 
   (apply app/logdiff ["resources/lhs" "resources/rhs"])
   
